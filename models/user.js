@@ -6,9 +6,9 @@
 // can be made to run faster than normal code 
 // prohibits some syntax
 
-const { Model } = require('sequelize');
+const { Model, DataTypes } = require('sequelize');
 
-module.exports = (sequelize, DataTypes) => {
+module.exports = (sequelize) => {
     class User extends Model {
         static associate(models) {
            User.hasMany(models.Course, {
@@ -31,9 +31,6 @@ module.exports = (sequelize, DataTypes) => {
         password: {
             type: DataTypes.STRING,
         },
-    }, {
-        sequelize,
-        modelName: 'User',
-    });
+    }, { sequelize });
     return User;
 };
