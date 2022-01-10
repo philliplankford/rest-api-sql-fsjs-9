@@ -1,8 +1,12 @@
 'use strict';
 
+const { decodeBase64 } = require('bcryptjs');
 // load modules
 const express = require('express');
 const morgan = require('morgan');
+const sequelize = require('sequelize');
+
+const db = require('./models');
 
 // variable to enable global error logging
 const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'true';
@@ -12,6 +16,19 @@ const app = express();
 
 // setup morgan which gives us http request logging
 app.use(morgan('dev'));
+
+// test db connection
+(async () => {
+  await db.sequelize.sync();
+
+  try {
+    await db.sequelize.authenticate();
+    console.log('Connection to database was successful');
+  } catch (error) {
+    console.log('Unable to connect to the database', error);
+  }
+
+})();
 
 // setup a friendly greeting for the root route
 app.get('/', (req, res) => {
