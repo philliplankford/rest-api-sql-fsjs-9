@@ -17,6 +17,14 @@ const app = express();
 // setup morgan which gives us http request logging
 app.use(morgan('dev'));
 
+// routes 
+const indexRouter = require('./routes/index');
+const apiRouter = require('./routes/api');
+
+// use routes 
+app.use('/', indexRouter);
+app.use('/api', apiRouter);
+
 // test db connection
 (async () => {
   await db.sequelize.sync();
@@ -29,13 +37,6 @@ app.use(morgan('dev'));
   }
 
 })();
-
-// setup a friendly greeting for the root route
-app.get('/', (req, res) => {
-  res.json({
-    message: 'Welcome to the REST API project!',
-  });
-});
 
 // send 404 if no other route matched
 app.use((req, res) => {
