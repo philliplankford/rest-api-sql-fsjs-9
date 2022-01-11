@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
     class Course extends Model {
         static associate(models){ // ES6 Syntax
             Course.belongsTo(models.User, {
-                foreignKey: {
+                foreignKey: { // this info should be the same as user model
                     fieldName: 'userId',
                     allowNull: false,
                     validate: {

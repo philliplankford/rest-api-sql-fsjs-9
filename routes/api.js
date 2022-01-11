@@ -7,10 +7,9 @@ const router = express.Router();
 const { asyncHandler } = require('../middleware/async-handler');
 const { authenticateUser } = require('../middleware/auth-user');
 const { User, Course } = require('../models');
-const course = require('../models/course');
 
 // GET users
-router.get('/users', authenticateUser, asyncHandler( async (req, res, next) => {
+router.get('/users', authenticateUser, asyncHandler( async (req, res) => {
     const user = req.currentUser;
 
     res.status(200).json({
@@ -21,10 +20,10 @@ router.get('/users', authenticateUser, asyncHandler( async (req, res, next) => {
 }));
 
 // POST users
-router.post('/users', asyncHandler( async (req, res, next) => {
+router.post('/users', asyncHandler( async (req, res) => {
     try {
         await User.create(req.body);
-        res.status(201).location('/').end();
+        res.status(201).location('/').end(); // .end() is required when nothing is returned in the response
     } catch (error) {
         if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
             const errors = error.errors.map(err => err.message);
@@ -36,7 +35,7 @@ router.post('/users', asyncHandler( async (req, res, next) => {
 }));
 
 // GET courses
-router.get('/courses', asyncHandler( async (req, res, next) => {
+router.get('/courses', asyncHandler( async (req, res) => {
     const courses = await Course.findAll({
         include: [
             {
@@ -61,7 +60,7 @@ router.get('/courses', asyncHandler( async (req, res, next) => {
     res.status(200).json(courses);
 }));
 
-router.get('/courses/:id', asyncHandler( async (req, res, next) => {
+router.get('/courses/:id', asyncHandler( async (req, res) => {
     const courseId = req.params.id;
 
     const course = await Course.findOne({
@@ -100,7 +99,7 @@ router.get('/courses/:id', asyncHandler( async (req, res, next) => {
 }));
 
 // POST courses
-router.post('/courses', authenticateUser, asyncHandler ( async (req, res, next) => {
+router.post('/courses', authenticateUser, asyncHandler ( async (req, res) => {
     try {
         const newCourse = await Course.create(req.body);
         res.status(201).location(`/api/courses/${newCourse.id}`).end();
@@ -115,7 +114,7 @@ router.post('/courses', authenticateUser, asyncHandler ( async (req, res, next) 
 }));
 
 // PUT courses
-router.put('/courses/:id', authenticateUser, asyncHandler ( async (req, res, next) => {
+router.put('/courses/:id', authenticateUser, asyncHandler ( async (req, res) => {
     const courseId = req.params.id;
     const course = await Course.findByPk(courseId);
     if (req.currentUser.id === course.userId) {
@@ -144,7 +143,7 @@ router.put('/courses/:id', authenticateUser, asyncHandler ( async (req, res, nex
 }));
 
 // DELETE courses
-router.delete('/courses/:id', authenticateUser, asyncHandler ( async (req, res, next) => {
+router.delete('/courses/:id', authenticateUser, asyncHandler ( async (req, res) => {
     const courseId = req.params.id;
     const course = await Course.findByPk(courseId);
     if (req.currentUser.id === course.userId) {

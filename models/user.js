@@ -10,7 +10,7 @@ const { Model, DataTypes } = require('sequelize');
 const bcrypt = require('bcryptjs');
 
 module.exports = (sequelize) => {
-    class User extends Model {
+    class User extends Model { // ES6 Syntax
         static associate(models) {
            User.hasMany(models.Course, {
                foreignKey: {
@@ -66,7 +66,7 @@ module.exports = (sequelize) => {
                 notEmpty: {
                     msg: 'Please provide an email.',
                 },
-                isEmail: {
+                isEmail: { // built in email check
                     msg: 'Please provide a valid email.',
                 },
             },
@@ -74,9 +74,9 @@ module.exports = (sequelize) => {
         password: {
             type: DataTypes.STRING,
             allowNull: false,
-            set(val) {
+            set(val) { // custom set value
                 const hashedPassword = bcrypt.hashSync(val, 10);
-                this.setDataValue('password', hashedPassword);
+                this.setDataValue('password', hashedPassword); // replace with the hashed password
             },
             validate: {
                 notNull: {
