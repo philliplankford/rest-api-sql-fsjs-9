@@ -15,6 +15,15 @@ module.exports = (sequelize) => {
            User.hasMany(models.Course, {
                foreignKey: {
                    fieldName: 'userId',
+                   allowNull: false,
+                   validate: {
+                       notNull: {
+                           msg: 'A user ID is required.'
+                       },
+                       notEmpty: {
+                           msg: 'Please provide a user ID'
+                       }
+                   }
                },
            }) 
         }
